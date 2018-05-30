@@ -23,7 +23,9 @@ A mongoose plugin to facilitate population and sorting among others when referen
             Model from which value is taken (for type = 'local') 
             or 
             Model to which value is assigned (for type = 'foreign')
-            >"
+            >",
+
+        'referenceField'?: '<Used to get the document whose targetField will be updated>'
     }
 
     //'referenceField' and 'targetModel' used => type = 'foreign'; ELSE, type = 'local'
