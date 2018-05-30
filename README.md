@@ -19,11 +19,11 @@ A mongoose plugin to facilitate population and sorting among others when referen
 
         'targetModel'?: 
             //default = schema using the plugin
-            "<
+            `<
             Model from which value is taken (for type = 'local') 
             or 
             Model to which value is assigned (for type = 'foreign')
-            >",
+            >`,
 
         'referenceField'?: '<Used to get the document whose targetField will be updated>'
     }
