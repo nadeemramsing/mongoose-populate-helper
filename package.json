@@ -1,0 +1,23 @@
+{
+  "name": "mongoose-populate-helper",
+  "version": "1.0.0",
+  "description": "A mongoose plugin to facilitate population and sorting among others when referencing is used.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nadeemramsing/mongoose-populate-helper.git"
+  },
+  "author": "Nadeem Ramsing <nadeem.ramsing@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nadeemramsing/mongoose-populate-helper/issues"
+  },
+  "homepage": "https://github.com/nadeemramsing/mongoose-populate-helper#readme",
+  "dependencies": {
+    "lodash": "^4.17.10",
+    "mongoose": "^5.1.3"
+  }
+}
