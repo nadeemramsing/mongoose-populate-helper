@@ -82,10 +82,10 @@ function errorHandler(config) {
         localProperties = ['sourceField', 'targetField', 'map'],
         foreignProperties = localProperties.concat(['referenceField', 'targetModel']),
         possibilities = [
-            localProperties
+            foreignProperties
                 .filter(key => !(key in config)),
 
-            foreignProperties
+            localProperties
                 .filter(key => !(key in config))
         ];
 
