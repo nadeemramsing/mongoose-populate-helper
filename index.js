@@ -6,11 +6,19 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
     _.each(configs, function (config) {
         config.targetModel = config.targetModel ? mongoose.modelSchemas[config.targetModel] : schema;
 
+        let type = 'local';
+
+        if (['referenceField', 'targetModel'].every(key => key in config))
+            type = 'foreign';
+
         const newField = {
             [config.targetField.name]: _.omit(config.targetField, 'name')
         };
 
-        schema.add(newField);
+        if (type === 'foreign')
+            config.targetModel.add(newField);
+        else
+            schema.add(newField);
 
         schema.post('save', function (document, done) {
             async.waterfall([
@@ -49,10 +57,19 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
                 document[config.targetField.name] = config.map ? config.map(document[config.sourceField]) : document[config.sourceField];
 
-                document.collection
-                    .update({ _id: document._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
-                    .then(() => next())
-                    .catch(next);
+                if (type === 'foreign') {
+                    document.populate(config.referenceField, (err, document) => {
+                        document[config.referenceField].collection
+                            .update({ _id: document[config.referenceField]._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
+                            .then(() => next())
+                            .catch(next);
+                    })
+                }
+                else
+                    document.collection
+                        .update({ _id: document._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
+                        .then(() => next())
+                        .catch(next);
             }
         });
     });
