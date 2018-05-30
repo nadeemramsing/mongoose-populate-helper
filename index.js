@@ -7,8 +7,6 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
         //default
         config.targetModel = config.targetModel ? mongoose.modelSchemas[config.targetModel] : schema;
 
-        errorHandler(config);
-
         const type = getType(config);
 
         const newField = {
@@ -77,23 +75,6 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 }
 
 /* GLOBAL HELPERS */
-function errorHandler(config) {
-    const
-        localProperties = ['sourceField', 'targetField', 'map'],
-        foreignProperties = localProperties.concat(['referenceField', 'targetModel']),
-        possibilities = [
-            foreignProperties
-                .filter(key => !(key in config)),
-
-            localProperties
-                .filter(key => !(key in config))
-        ];
-
-    possibilities
-        .filter(possibility => possibility.length !== 0)
-        .map(possibility => { throw new Error(`Missing ${possibility.length === 1 ? 'property' : 'properties'}: ${JSON.stringify(possibility)}`) })
-}
-
 function getType(config) {
     if (['referenceField', 'targetModel'].every(key => key in config))
         return 'foreign';
