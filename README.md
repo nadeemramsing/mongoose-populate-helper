@@ -38,7 +38,7 @@ A mongoose plugin to facilitate population and sorting among others when referen
 
 E.g.:
 
-![Alt text](img\mongoose-populate-helper-local.png)
+![Alt text](img/mongoose-populate-helper-local.png)
 
 
 ### Type = 'foreign'
@@ -48,21 +48,21 @@ E.g.:
 
 E.g.:
 
-![Alt text](img\mongoose-populate-helper-foreign.png)
+![Alt text](img/mongoose-populate-helper-foreign.png)
 
 Example (local):
 
-![Alt text](img\Code_2018-05-30_12-40-54.png)
+![Alt text](img/Code_2018-05-30_12-40-54.png)
 
 Example (foreign):
 
-![Alt text](img\Code_2018-05-30_12-38-37.png)
+![Alt text](img/Code_2018-05-30_12-38-37.png)
 )
 
 ----------
 
 ## Result
-![Alt text](img\chrome_2018-05-30_12-42-50.png)
+![Alt text](img/chrome_2018-05-30_12-42-50.png)
 
 ----------
 
