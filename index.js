@@ -4,21 +4,23 @@ const
 
 module.exports = function mongoosePopulateHelper(schema, configs) {
     _.each(configs, function (config) {
+        //default
         config.targetModel = config.targetModel ? mongoose.modelSchemas[config.targetModel] : schema;
 
-        let type = 'local';
+        errorHandler(config);
 
-        if (['referenceField', 'targetModel'].every(key => key in config))
-            type = 'foreign';
+        const type = getType(config);
 
         const newField = {
             [config.targetField.name]: _.omit(config.targetField, 'name')
         };
 
-        if (type === 'foreign')
-            config.targetModel.add(newField);
-        else
-            schema.add(newField);
+        addFieldToSchema({
+            newField: newField,
+            type: type,
+            localSchema: schema,
+            foreignSchema: config.targetModel
+        });
 
         schema.post('save', function (document, done) {
             async.waterfall([
@@ -57,20 +59,51 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
                 document[config.targetField.name] = config.map ? config.map(document[config.sourceField]) : document[config.sourceField];
 
-                if (type === 'foreign') {
-                    document.populate(config.referenceField, (err, document) => {
-                        document[config.referenceField].collection
-                            .update({ _id: document[config.referenceField]._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
-                            .then(() => next())
-                            .catch(next);
-                    })
-                }
+                if (type === 'foreign')
+                    document.populate(config.referenceField, (err, document) => err ? next(err) : updateDocument(document[config.referenceField]))
                 else
-                    document.collection
-                        .update({ _id: document._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
+                    updateDocument(document);
+
+                function updateDocument(model) {
+                    model.collection
+                        .update({ _id: model._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
                         .then(() => next())
                         .catch(next);
+                }
             }
+
         });
     });
+}
+
+/* GLOBAL HELPERS */
+function errorHandler(config) {
+    const
+        localProperties = ['sourceField', 'targetField', 'map'],
+        foreignProperties = localProperties.concat(['referenceField', 'targetModel']),
+        possibilities = [
+            localProperties
+                .filter(key => !(key in config)),
+
+            foreignProperties
+                .filter(key => !(key in config))
+        ];
+
+    possibilities
+        .filter(possibility => possibility.length !== 0)
+        .map(possibility => { throw new Error(`Missing ${possibility.length === 1 ? 'property' : 'properties'}: ${JSON.stringify(possibility)}`) })
+}
+
+function getType(config) {
+    if (['referenceField', 'targetModel'].every(key => key in config))
+        return 'foreign';
+
+    return 'local';
+}
+
+function addFieldToSchema(options) {
+    if (options.type === 'foreign')
+        options.foreignSchema.add(options.newField);
+    else
+        options.localSchema.add(options.newField);
 }
