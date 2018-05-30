@@ -64,10 +64,15 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
                 /* LOCAL HELPER */
                 function updateDocument(model) {
-                    model.collection
-                        .update({ _id: model._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
-                        .then(() => next())
-                        .catch(next);
+                    try {
+                        model.collection
+                            .update({ _id: model._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
+                            .then(() => next())
+                            .catch(next);
+                    }
+                    catch (e) {
+                        next();
+                    }
                 }
             }
 
