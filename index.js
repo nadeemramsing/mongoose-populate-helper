@@ -62,6 +62,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                 else
                     updateDocument(document);
 
+                /* LOCAL HELPER */
                 function updateDocument(model) {
                     model.collection
                         .update({ _id: model._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
