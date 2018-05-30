@@ -63,7 +63,7 @@ Example (foreign):
 ----------
 
 ## Result
-![Alt text](img/chrome_2018-05-30_12-42-50.png)
+![Alt text](img/chrome_2018-05-30_14-17-02.png)
 
 ----------
 
