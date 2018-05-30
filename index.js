@@ -12,9 +12,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
         schema.add(newField);
 
-        schema.pre('save', function (done) {
-            const document = this;
-
+        schema.post('save', function (document, done) {
             async.waterfall([
                 selectSourceField,
                 populateSourceField,
@@ -50,7 +48,11 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                     return done();
 
                 document[config.targetField.name] = config.map ? config.map(document[config.sourceField]) : document[config.sourceField];
-                next();
+
+                document.collection
+                    .update({ _id: document._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
+                    .then(() => next())
+                    .catch(next);
             }
         });
     });
