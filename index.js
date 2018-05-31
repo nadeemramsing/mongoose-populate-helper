@@ -43,9 +43,13 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                             .join(' ')
                     )
                     .exec(next);
+                //Model.exec returns new instance of document => Not the same reference used
+                //document.populate returns same instance of document
             }
 
-            function populateSourceField(document, next) {
+            function populateSourceField(selectedDocument, next) {
+                document = selectedDocument;
+
                 if (document === null)
                     return done();
 
