@@ -70,7 +70,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                 else
                     updateDocument(document);
 
-                /* LOCAL HELPER */
+                /* ASSIGNTARGETFIELD LOCAL HELPER */
                 function updateDocument(model) {
                     try {
                         model.collection
@@ -82,6 +82,15 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                         next();
                     }
                 }
+            }
+
+            /* HOOK LOCAL HELPER */
+            function get(path) {
+                return _.get(path);
+            }
+
+            function set() {
+                return _.set(path);
             }
 
         });
