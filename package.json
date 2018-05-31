@@ -1,6 +1,6 @@
 {
   "name": "mongoose-populate-helper",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A mongoose plugin to facilitate population and sorting among others when referencing is used.",
   "main": "index.js",
   "scripts": {
