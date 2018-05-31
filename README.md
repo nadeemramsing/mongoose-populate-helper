@@ -4,12 +4,15 @@ A mongoose plugin to facilitate population and sorting among others when referen
 ----------
 
 ## How to use
+
+**Note: targetModel changed to targetSchema in v1.0.9.**
+
 ```ts
     articleSchema.plugin(mongoosePopulateHelper, configurations: Array<Object> || configuration: Object);
 
     configuration: {
         'sourceField': 
-            '<Field that will be used in targetModel to set targetField>',
+            '<Field that will be used in targetSchema to set targetField>',
 
         'targetField': 
             '<New field added to schema>',
@@ -17,25 +20,25 @@ A mongoose plugin to facilitate population and sorting among others when referen
         'map': 
             "<Function to map sourceField's value before assigning to targetField>",
 
-        'targetModel'?: 
+        'targetSchema'?: 
             //default = schema using the plugin
             `<
-            Model from which value is taken (for type = 'local') 
+            Schema from which value is taken (for type = 'local') 
             or 
-            Model to which value is assigned (for type = 'foreign')
+            Schema to which value is assigned (for type = 'foreign')
             >`,
 
         'referenceField'?: 
             '<Used to get the document whose targetField will be updated>'
     }
 
-    //'referenceField' and 'targetModel' used => type = 'foreign'; ELSE, type = 'local'
+    //'referenceField' and 'targetSchema' used => type = 'foreign'; ELSE, type = 'local'
 ```
 
 ### Type = 'local'
 - Assignment is done in Schema using the plugin.
 
-- Retrieval is done from targetModel.
+- Retrieval is done from targetSchema.
 
 E.g.:
 
@@ -43,7 +46,7 @@ E.g.:
 
 
 ### Type = 'foreign'
-- Assignment is done in targetModel using **referenceField**.
+- Assignment is done in targetSchema using **referenceField**.
 
 - Retrieval is done from Schema using the plugin.
 
@@ -68,6 +71,7 @@ Example (foreign):
 ----------
 
 ## Limitations
+- Path does not work (except for configuration.targetField)
 
 ----------
 
