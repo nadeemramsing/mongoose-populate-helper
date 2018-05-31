@@ -102,7 +102,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                 return _.get(document, path);
             }
 
-            function set() {
+            function set(path) {
                 return _.set(document, path);
             }
 
