@@ -25,6 +25,9 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
         });
 
         schema.post('save', function (document, done) {
+            let sourceFieldValue = get(config.sourceField),
+                targetFieldValue = get(config.targetField.name);
+
             async.waterfall([
                 selectSourceField,
                 populateSourceField,
@@ -32,7 +35,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
             ], done);
 
             function selectSourceField(next) {
-                if (!_.isNil(document[config.sourceField]))
+                if (!_.isNil(sourceFieldValue))
                     return next(null, document);
 
                 document.constructor
@@ -49,21 +52,24 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
             function populateSourceField(selectedDocument, next) {
                 document = selectedDocument;
+                //refresh after new 
+                sourceFieldValue = get(config.sourceField);
+                targetFieldValue = get(config.targetField.name)
 
                 if (document === null)
                     return done();
 
-                if (!(document[config.sourceField] instanceof ObjectId))
+                if (!(sourceFieldValue instanceof ObjectId))
                     return next(null, document);
 
                 document.populate(config.sourceField, next)
             }
 
             function assignTargetField(document, next) {
-                if (document[config.sourceField] === null)
+                if (sourceFieldValue === null)
                     return done();
 
-                document[config.targetField.name] = config.map ? config.map(document[config.sourceField]) : document[config.sourceField];
+                targetFieldValue = config.map ? config.map(sourceFieldValue) : sourceFieldValue;
 
                 if (type === 'foreign')
                     document.populate(config.referenceField, (err, document) => err ? next(err) : updateDocument(document[config.referenceField]))
@@ -74,7 +80,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                 function updateDocument(model) {
                     try {
                         model.collection
-                            .update({ _id: model._id }, { $set: { [config.targetField.name]: document[config.targetField.name] } })
+                            .update({ _id: model._id }, { $set: { [config.targetField.name]: targetFieldValue } })
                             .then(() => next())
                             .catch(next);
                     }
@@ -86,11 +92,11 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
             /* HOOK LOCAL HELPER */
             function get(path) {
-                return _.get(path);
+                return _.get(document, path);
             }
 
             function set() {
-                return _.set(path);
+                return _.set(document, path);
             }
 
         });
