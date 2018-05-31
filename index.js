@@ -1,11 +1,14 @@
 const
     _ = require('lodash'),
-    mongoose = require('mongoose');
+    ObjectId = require('mongoose/lib/types/objectid');
 
 module.exports = function mongoosePopulateHelper(schema, configs) {
+    if (configs.constructor.name === 'Object')
+        configs = [configs];
+
     _.each(configs, function (config) {
         //default
-        config.targetModel = config.targetModel ? mongoose.modelSchemas[config.targetModel] : schema;
+        config.targetSchema = config.targetSchema || schema;
 
         const type = getType(config);
 
@@ -17,7 +20,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
             newField: newField,
             type: type,
             localSchema: schema,
-            foreignSchema: config.targetModel
+            foreignSchema: config.targetSchema
         });
 
         schema.post('save', function (document, done) {
@@ -45,7 +48,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                 if (document === null)
                     return done();
 
-                if (!(document[config.sourceField] instanceof mongoose.Types.ObjectId))
+                if (!(document[config.sourceField] instanceof ObjectId))
                     return next(null, document);
 
                 document.populate(config.sourceField, next)
@@ -82,7 +85,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
 /* GLOBAL HELPERS */
 function getType(config) {
-    if (['referenceField', 'targetModel'].every(key => key in config))
+    if (['referenceField', 'targetSchema'].every(key => key in config))
         return 'foreign';
 
     return 'local';
