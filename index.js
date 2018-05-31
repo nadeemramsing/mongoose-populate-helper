@@ -28,6 +28,16 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
             let sourceFieldValue = get(config.sourceField),
                 targetFieldValue = get(config.targetField.name);
 
+            //document reference change detector
+            let documentProxy = new Proxy({ document }, {
+                set: (target, property, value) => {
+                    document = value;
+                    sourceFieldValue = get(config.sourceField);
+                    targetFieldValue = get(config.targetField.name);
+                    /* return true; */ //validates set
+                }
+            });
+
             async.waterfall([
                 selectSourceField,
                 populateSourceField,
@@ -51,10 +61,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
             }
 
             function populateSourceField(selectedDocument, next) {
-                document = selectedDocument;
-                //refresh after new 
-                sourceFieldValue = get(config.sourceField);
-                targetFieldValue = get(config.targetField.name)
+                documentProxy.document = selectedDocument;
 
                 if (document === null)
                     return done();

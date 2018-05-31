@@ -71,7 +71,7 @@ Example (foreign):
 ----------
 
 ## Limitations
-- Path does not work (except for configuration.targetField)
+- Path implemented but not yet tested (except for configuration.targetField)
 
 ----------
 
