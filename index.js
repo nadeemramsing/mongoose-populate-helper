@@ -1,5 +1,6 @@
 const
     _ = require('lodash'),
+    async = require('async'),
     ObjectId = require('mongoose/lib/types/objectid');
 
 module.exports = function mongoosePopulateHelper(schema, configs) {
@@ -8,7 +9,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
 
     _.each(configs, function (config) {
         //default
-        config.targetSchema = config.targetSchema || schema;
+        config.targetSchema = config.targetSchema ? config.targetSchema : schema;
 
         const type = getType(config);
 
