@@ -75,7 +75,7 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
             function assignTargetField(document, next) {
                 documentProxy.document = document;
 
-                if (sourceFieldValue === null)
+                if (_.isNil(sourceFieldValue))
                     return done();
 
                 targetFieldValue = config.map ? config.map(sourceFieldValue) : sourceFieldValue;
