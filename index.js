@@ -66,13 +66,15 @@ module.exports = function mongoosePopulateHelper(schema, configs) {
                 if (document === null)
                     return done();
 
-                if (!(sourceFieldValue instanceof ObjectId))
-                    return next(null, document);
+                if (sourceFieldValue && sourceFieldValue.constructor.name === 'ObjectID')
+                    return document.populate(config.sourceField, next)
 
-                document.populate(config.sourceField, next)
+                return next(null, document);
             }
 
             function assignTargetField(document, next) {
+                documentProxy.document = document;
+
                 if (sourceFieldValue === null)
                     return done();
 
