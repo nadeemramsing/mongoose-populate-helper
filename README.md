@@ -73,7 +73,7 @@ Example (foreign):
 ## Limitations
 - Path implemented but not yet tested (except for configuration.targetField)
 
-EDIT: Using **path** works (test).
+EDIT: Using **path** works (tested).
 
 ----------
 
