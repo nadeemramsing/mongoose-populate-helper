@@ -1,7 +1,6 @@
 const
     _ = require('lodash'),
-    async = require('async'),
-    ObjectId = require('mongoose/lib/types/objectid');
+    async = require('async');
 
 module.exports = function mongoosePopulateHelper(schema, configs) {
     if (configs.constructor.name === 'Object')
